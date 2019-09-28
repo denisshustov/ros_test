@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+
+<robot name="fourwheelrobot" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+    <xacro:property name="radius" value="0.2" />
+    <xacro:property name="wheel" value="wheel" />
+    <xacro:macro name="wheel_macro" params="rpy name joint_origin_xyz">
+        <link name="${name}">
+          <inertial>
+            <origin xyz="0 0 0.5" rpy="${rpy}" />
+            <mass value="1.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+          </inertial>
+          <visual name="">
+              <origin xyz="0 0 0" rpy="${rpy}" />
+              <geometry>
+                <cylinder length="0.1" radius="${radius}" />
+              </geometry>
+              <material name="black">
+                <color rgba="0.05 0.05 0.05 1"/>
+              <texture filename=""/>
+            </material>
+          </visual>
+          <collision>
+            <origin xyz="0 0 0" rpy="${rpy}" />
+            <geometry>
+              <cylinder length="0.1" radius="${radius}" />
+            </geometry>
+          </collision>
+        </link>
+
+        <joint name="joint_${name}" type="continuous">
+          <parent link="base_link"/>
+          <child link="${name}"/>
+          <origin xyz="${joint_origin_xyz}" rpy="0 0 0" />
+          <axis xyz="0 1 0" rpy="0 0 0" />
+        </joint>
+        
+
+        <gazebo reference="${name}">
+          <mu1 value="200.0"/>
+          <mu2 value="100.0"/>
+          <kp value="10000000.0" />
+          <kd value="1.0" />
+          <material>Gazebo/Grey</material>
+        </gazebo>
+
+        <transmission name="trnasm_${name}">
+          <type>transmission_interface/SimpleTransmission</type>
+          <actuator name="$act_${name}">
+            <mechanicalReduction>1</mechanicalReduction>
+          </actuator>
+          <joint name="joint_${name}">
+            <hardwareInterface>VelocityJointInterface</hardwareInterface>
+          </joint>
+        </transmission>
+    </xacro:macro>
+
+  <!-- Base link -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0" />
+      <geometry>
+          <box size="1 0.5 0.35"/>
+      </geometry>
+      <material name="yellow">
+        <color rgba="0.8 0.8 0 1"/>
+      </material>
+    </visual>
+  </link>
+  <!-- Front Right Wheel -->
+  <xacro:wheel_macro rpy="1.570795 0 0" name="f_r_${wheel}" joint_origin_xyz="0.25 -0.30 0"/>
+  
+  <!-- Back Right Wheel -->
+  <xacro:wheel_macro rpy="1.570795 0 0" name="b_r_${wheel}" joint_origin_xyz="-0.25 -0.30 0"/>
+
+  <!-- Front Left Wheel -->
+  <xacro:wheel_macro rpy="1.570795 0 0" name="f_l_${wheel}" joint_origin_xyz="0.25 0.30 0"/>
+
+  <!-- Back Left Wheel -->
+  <xacro:wheel_macro rpy="1.570795 0 0" name="b_l_${wheel}" joint_origin_xyz="-0.25 0.30 0" />
+
+  <!-- Gazebo plugin for ROS Control -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/mugator_manip</robotNamespace>
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+  </robot>
+    <!-- <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+  </gazebo> -->
