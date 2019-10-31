@@ -17,13 +17,25 @@
     <arg name="headless" value="$(arg headless)"/>
   </include>
 
+
   <!-- Load the URDF into the ROS Parameter Server -->
   <param name="robot_description"
     command="$(find xacro)/xacro --inorder '$(find car)/urdf/car.xacro'" />
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args="-urdf -model rrbot -param robot_description"/>
+    args="-urdf -model car_ns -param robot_description -y -6"/>
+
+  <rosparam file="$(find car)/config/diffdrive.yaml" command="load" ns="diffdrive_controller"/>
+  <node name="controller_spawner" pkg ="controller_manager" type="spawner"
+    args="diffdrive_controller
+        joint_state_controller
+        --shutdown-timeout 3"/>
+    <!-- converts joint states to TF transforms -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+        <remap from="joint_state" to="/car_ns/joint_states" />
+    </node>
+
 
   <!-- ros_control rrbot launch file -->
   <!--include file="$(find rrbot_control)/launch/rrbot_control.launch" /-->
