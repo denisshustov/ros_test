@@ -24,17 +24,21 @@
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args="-urdf -model car_ns -param robot_description -y -6"/>
+    args="-urdf -model car -param robot_description"/>
 
-  <rosparam file="$(find car)/config/diffdrive.yaml" command="load" ns="diffdrive_controller"/>
+  <!-- <rosparam file="$(find car)/config/config.yaml" command="load"/>
   <node name="controller_spawner" pkg ="controller_manager" type="spawner"
-    args="diffdrive_controller
-        joint_state_controller
-        --shutdown-timeout 3"/>
-    <!-- converts joint states to TF transforms -->
+    ns="/car"
+    args="joint_state_controller
+        joint_f_r_wheel_position_controller
+        joint_b_r_wheel_position_controller
+        joint_f_l_wheel_position_controller
+        joint_b_l_wheel_position_controller"/>
+
+
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
-        <remap from="joint_state" to="/car_ns/joint_states" />
-    </node>
+        <remap from="joint_state" to="/car/joint_states" />
+    </node> -->
 
 
   <!-- ros_control rrbot launch file -->
