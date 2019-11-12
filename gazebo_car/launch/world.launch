@@ -24,11 +24,11 @@
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args="-urdf -model car -param robot_description"/>
+    args="-urdf -model -param robot_description"/>
 
-  <rosparam file="$(find car)/config/config.yaml" command="load" ns="/car"/>
+  <rosparam file="$(find car)/config/config.yaml" command="load"/>
   <node name="car_controller_spawner" pkg ="controller_manager" type="spawner"
-    args="joint_state_controller 
+    args=" 
         back_left_wheel_joint_position_controller
         back_right_wheel_joint_position_controller
         front_left_wheel_joint_position_controller
