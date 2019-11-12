@@ -1,2 +1,0 @@
-type: "joint_state_controller/JointSateController"
-publish_rate: 50

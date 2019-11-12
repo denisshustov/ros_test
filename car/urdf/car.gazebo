@@ -1,7 +1,17 @@
 <?xml version="1.0"?>
-<robot>
+<robot 
+    xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+    xmlns:model="http://playerstage.sourceforge.net/gazebo/xmlschema/#model"
+    xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+    xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body"
+    xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"
+    xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#joint"
+    xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+    xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+    xmlns:rendering="http://playerstage.sourceforge.net/gazebo/xmlschema/#rendering"
+    xmlns:physics="http://playerstage.sourceforge.net/gazebo/xmlschema/#physics"
+    xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!-- Gazebo plugin for ROS Control -->
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
             <robotNamespace>/car</robotNamespace>
@@ -10,33 +20,76 @@
         </plugin>
     </gazebo>
 
-    <gazebo reference="f_r_wheel">
-        <mu1 value="200.0"/>
-        <mu2 value="100.0"/>
-        <kp value="10000000.0" />
-        <kd value="1.0" />
-        <material>Gazebo/Orange</material>
+    <gazebo reference="base_link">
+        <material>Gazebo/Red</material>
     </gazebo>
-    <gazebo reference="b_r_wheel">
-        <mu1 value="200.0"/>
-        <mu2 value="100.0"/>
-        <kp value="10000000.0" />
-        <kd value="1.0" />
-        <material>Gazebo/Orange</material>
+
+    <gazebo reference="front_left_wheel_link">
+        <material>Gazebo/Green</material>
     </gazebo>
-    <gazebo reference="f_l_wheel">
-        <mu1 value="200.0"/>
-        <mu2 value="100.0"/>
-        <kp value="10000000.0" />
-        <kd value="1.0" />
-        <material>Gazebo/Orange</material>
+    <gazebo reference="front_right_wheel_link">
+        <material>Gazebo/Green</material>
+        <turnGravityOff>false</turnGravityOff>
     </gazebo>
-    <gazebo reference="b_l_wheel">
-        <mu1 value="200.0"/>
-        <mu2 value="100.0"/>
-        <kp value="10000000.0" />
-        <kd value="1.0" />
-        <material>Gazebo/Orange</material>
+    <gazebo reference="back_left_wheel_link">
+        <material>Gazebo/Black</material>
     </gazebo>
+
+    <gazebo reference="back_right_wheel_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+
+    <gazebo reference="base_scan_link">
+        <sensor:ray name="laser">
+            <rayCount>683</rayCount>
+            <rangeCount>683</rangeCount>
+            <laserCount>1</laserCount>
+            
+            <origin>0.0 0.0 0.0</origin>
+            <displayRays>false</displayRays>
+            
+            <minAngle>-135</minAngle>
+            <maxAngle> 135</maxAngle>
+            
+            <minRange>0.06</minRange>
+            <maxRange>4.0</maxRange>
+            <resRange>0.001</resRange>
+            <updateRate>10.0</updateRate>
+            
+            <controller:gazebo_ros_laser name="gazebo_ros_base_scan_link_controller" plugin="libgazebo_ros_laser.so">
+                <gaussianNoise>0.005</gaussianNoise>
+                <alwaysOn>true</alwaysOn>
+                <updateRate>10.0</updateRate>
+                <topicName>base_scan/scan</topicName>
+                <frameName>base_scan_link</frameName>
+                <interface:laser name="gazebo_ros_base_scan_link_iface"/>
+            </controller:gazebo_ros_laser>
+        </sensor:ray>
+    </gazebo>
+    
+    <gazebo reference="laser_base_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="base_scan_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <!-- Physical Material Macros -->
+    <material name="Red">
+    	<color rgba="1.0 0 0 1.0"/>
+    </material>
+    <material name="Green">
+    	<color rgba="0 1.0 0 1.0"/>
+    </material>
+    <material name="Blue">
+    	<color rgba="0 0 1.0 0.5"/>
+    </material>
+    <material name="Black">
+    	<color rgba="0 0 0 1.0"/>
+    </material>
+    <material name="Aqua">
+    	<color rgba="0 255 255 1.0"/>
+    </material>
 
 </robot>

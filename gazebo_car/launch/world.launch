@@ -26,19 +26,19 @@
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-urdf -model car -param robot_description"/>
 
-  <!-- <rosparam file="$(find car)/config/config.yaml" command="load"/>
+  <rosparam file="$(find car)/config/config.yaml" command="load"/>
   <node name="controller_spawner" pkg ="controller_manager" type="spawner"
-    ns="/car"
-    args="joint_state_controller
-        joint_f_r_wheel_position_controller
-        joint_b_r_wheel_position_controller
-        joint_f_l_wheel_position_controller
-        joint_b_l_wheel_position_controller"/>
+    args="joint_state_controller        
+        back_left_wheel_joint_position_controller
+        back_right_wheel_joint_position_controller
+        front_left_wheel_joint_position_controller
+        front_right_wheel_joint_position_controller        
+        "/>
 
 
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
         <remap from="joint_state" to="/car/joint_states" />
-    </node> -->
+    </node>
 
 
   <!-- ros_control rrbot launch file -->
