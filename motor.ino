@@ -38,6 +38,8 @@ void messageCb( const geometry_msgs::Twist& msg){
   {
     TurnLeft();
   }
+  delay(100);
+  Stop();
 };
 
 ros::NodeHandle nh;
@@ -47,7 +49,7 @@ ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &messageCb );
 void setup() {
   Serial.begin(9600);  
   while (!Serial);
-  Serial.println("Serial OK");
+  //Serial.println("Serial OK");
   AFMS.begin(); 
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
   
@@ -57,38 +59,40 @@ void setup() {
 
   nh.initNode();
   nh.subscribe(sub);
-  Serial.println("INIT OK");
+  //Serial.println("INIT OK");
 }
 void Stop()
 {
   myMotorForward->run(RELEASE);
   myMotorBack->run(RELEASE);
-  Serial.println("STOP");
+  myMotorTurn->run(RELEASE);
+  //Serial.println("STOP");
+}
+
+void RunForward()
+{ 
+  myMotorBack->run(BACKWARD);
+  myMotorForward->run(FORWARD);
+  //Serial.println("FORWARD");
 }
 void RunBack()
 {
-  myMotorBack->run(BACKWARD);
+  myMotorBack->run(FORWARD);
   myMotorForward->run(BACKWARD);
-  Serial.println("BACKWARD");
+  //Serial.println("BACKWARD");
 }
 
 void TurnLeft()
 {
   myMotorTurn->run(FORWARD);
-  Serial.println("LEFT");
+ // Serial.println("LEFT");
 }
 void TurnRight()
 {
   myMotorTurn->run(BACKWARD);
-  Serial.println("RIGHT");
+  //Serial.println("RIGHT");
 }
 
-void RunForward()
-{
-  myMotorForward->run(FORWARD);
-  myMotorBack->run(FORWARD);
-  Serial.println("FORWARD");
-}
 
 void loop() {
   nh.spinOnce();
