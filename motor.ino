@@ -18,19 +18,21 @@ ros::NodeHandle nh;
 void messageCb( const geometry_msgs::Twist& msg){
   //speed_ang = msg.angular.z;
   //speed_lin = msg.linear.x;
-
-  char str[5];
   
-  nh.loginfo("Receive linear.x = ");
-  nh.loginfo(itoa(msg.linear.x, str, 2));
+  //char str[5];
   
-  nh.loginfo("Receive angular.z = ");
-  nh.loginfo(itoa(msg.angular.z, str, 2));
+  //nh.loginfo("Receive linear.x = ");
+  //sprintf(str,"%d",msg.linear.x);
+  //nh.loginfo(str);
+  
+  //nh.loginfo("Receive angular.z = ");
+  //sprintf(str,"%d",msg.angular.z);
+  //nh.loginfo(str);
 
   if(msg.linear.x == 0)
   {
     Stop();
-    return;
+    //return;
   }
   else if(msg.linear.x > 0)
   {
@@ -41,6 +43,10 @@ void messageCb( const geometry_msgs::Twist& msg){
     RunBack();
   }
 
+  if(msg.angular.z == 0)
+  {
+    myMotorTurn->run(RELEASE);  
+  }
   if(msg.angular.z > 0)
   {
     TurnRight();
@@ -49,14 +55,10 @@ void messageCb( const geometry_msgs::Twist& msg){
   {
     TurnLeft();
   }
-
-  for (uint8_t i=100; i<255; i++) {
-    myMotorForward->setSpeed(i);
-    myMotorBack->setSpeed(i);
-    delay(10);
-  }
-  //delay(100);
-  //Stop();
+  int v=map(msg.linear.x, 0.5, 1, 100, 255);
+  myMotorForward->setSpeed(v);
+  myMotorBack->setSpeed(v);
+  
 };
 
 ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &messageCb );
@@ -83,20 +85,19 @@ void Stop()
 {
   myMotorForward->run(RELEASE);
   myMotorBack->run(RELEASE);
-  myMotorTurn->run(RELEASE);
   //Serial.println("STOP");
 }
 
 void RunForward()
 { 
-  myMotorBack->run(BACKWARD);
-  myMotorForward->run(FORWARD);
+  myMotorBack->run(FORWARD);
+  myMotorForward->run(BACKWARD);
   //Serial.println("FORWARD");
 }
 void RunBack()
 {
-  myMotorBack->run(FORWARD);
-  myMotorForward->run(BACKWARD);
+  myMotorBack->run(BACKWARD);
+  myMotorForward->run(FORWARD);
   //Serial.println("BACKWARD");
 }
 
@@ -114,7 +115,7 @@ void TurnRight()
 
 void loop() {
   nh.spinOnce();
-  delay(20);
+  delay(10);
   
   //counter++;  
   
