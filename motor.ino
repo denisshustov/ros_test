@@ -1,4 +1,4 @@
-#include <Wire.h>
+  #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 
 #include <ArduinoHardware.h>
@@ -11,11 +11,22 @@ Adafruit_DCMotor *myMotorBack = AFMS.getMotor(1);
 Adafruit_DCMotor *myMotorTurn = AFMS.getMotor(2);
 Adafruit_DCMotor *myMotorForward = AFMS.getMotor(4);
 int speed = 255;
+int startSpeed = 100;
 
+ros::NodeHandle nh;
 
 void messageCb( const geometry_msgs::Twist& msg){
   //speed_ang = msg.angular.z;
   //speed_lin = msg.linear.x;
+
+  char str[5];
+  
+  nh.loginfo("Receive linear.x = ");
+  nh.loginfo(itoa(msg.linear.x, str, 2));
+  
+  nh.loginfo("Receive angular.z = ");
+  nh.loginfo(itoa(msg.angular.z, str, 2));
+
   if(msg.linear.x == 0)
   {
     Stop();
@@ -38,11 +49,16 @@ void messageCb( const geometry_msgs::Twist& msg){
   {
     TurnLeft();
   }
-  delay(100);
-  Stop();
+
+  for (uint8_t i=100; i<255; i++) {
+    myMotorForward->setSpeed(i);
+    myMotorBack->setSpeed(i);
+    delay(10);
+  }
+  //delay(100);
+  //Stop();
 };
 
-ros::NodeHandle nh;
 ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &messageCb );
 
 
@@ -53,13 +69,15 @@ void setup() {
   AFMS.begin(); 
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
   
-  myMotorBack->setSpeed(speed);
-  myMotorTurn->setSpeed(speed);
-  myMotorForward->setSpeed(speed);
+  myMotorBack->setSpeed(startSpeed);
+  myMotorTurn->setSpeed(speed);//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  myMotorForward->setSpeed(startSpeed);
 
   nh.initNode();
   nh.subscribe(sub);
   //Serial.println("INIT OK");
+
+  nh.loginfo("Motor init ok");
 }
 void Stop()
 {
